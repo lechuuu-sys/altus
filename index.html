@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Altus Ingeniería — Proyectos Residenciales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f3ef;
+    --gray-100: #ece9e3;
+    --gray-300: #b8b3aa;
+    --gray-500: #7a756c;
+    --accent: #c4933f;
+    --accent-light: #e8c87a;
+    --line: rgba(180,170,155,0.25);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 60px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none;
+  }
+
+  .nav-logo svg {
+    width: 28px; height: 28px;
+    stroke: var(--accent); stroke-width: 1.2; fill: none;
+  }
+
+  .nav-logo span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 300; letter-spacing: 0.2em;
+    color: var(--white); text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--gray-300); text-decoration: none;
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    transition: color 0.25s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    padding: 10px 24px;
+    border: 1px solid var(--accent);
+    color: var(--accent) !important;
+    transition: background 0.25s, color 0.25s !important;
+  }
+
+  .nav-cta:hover { background: var(--accent) !important; color: var(--black) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 100px;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 60px 80px 60px;
+    border-right: 1px solid var(--line);
+  }
+
+  .hero-tag {
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 32px;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .hero-tag::before {
+    content: ''; display: block;
+    width: 32px; height: 1px; background: var(--accent);
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 6vw, 88px);
+    font-weight: 300; line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+  }
+
+  .hero-title em {
+    font-style: italic; color: var(--accent);
+  }
+
+  .hero-desc {
+    color: var(--gray-300); font-size: 13px; line-height: 1.8;
+    max-width: 400px; margin-bottom: 48px;
+  }
+
+  .hero-btn {
+    display: inline-flex; align-items: center; gap: 16px;
+    padding: 16px 36px;
+    background: var(--accent); color: var(--black);
+    text-decoration: none; font-size: 11px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: all 0.3s; width: fit-content;
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .hero-btn:hover { background: var(--accent-light); }
+  .hero-btn svg { width: 16px; height: 16px; transition: transform 0.3s; }
+  .hero-btn:hover svg { transform: translateX(4px); }
+
+  .hero-right {
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 80px 60px;
+    position: relative;
+  }
+
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.5;
+  }
+
+  /* Triangle SVG large */
+  .hero-triangle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px; height: 320px;
+    opacity: 0.08;
+  }
+
+  .hero-stats {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; border: 1px solid var(--line);
+    background: var(--line);
+  }
+
+  .stat {
+    background: var(--black);
+    padding: 32px 28px;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px; font-weight: 300; color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gray-500); margin-top: 8px;
+  }
+
+  /* Project badge */
+  .project-badge {
+    position: relative; z-index: 2;
+    margin-top: 24px;
+    border: 1px solid var(--line);
+    padding: 20px 24px;
+    display: flex; align-items: center; gap: 20px;
+  }
+
+  .badge-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .badge-text { font-size: 11px; color: var(--gray-300); }
+  .badge-title { color: var(--white); font-size: 11px; margin-top: 4px; line-height: 1.5; }
+  .badge-projects { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+
+  /* ── SECTION BASE ── */
+  section { border-top: 1px solid var(--line); }
+
+  .section-label {
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gray-500); margin-bottom: 48px;
+    display: flex; align-items: center; gap: 16px;
+    transition: font-size 0.1s;
+  }
+
+  .section-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(to right, var(--line), transparent);
+  }
+
+  /* ── SERVICIOS ── */
+  #servicios { padding: 100px 60px; }
+
+  .servicios-header {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; margin-bottom: 72px; align-items: end;
+  }
+
+  .servicios-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300; line-height: 1.1;
+  }
+
+  .servicios-desc {
+    color: var(--gray-300); font-size: 13px; line-height: 1.8;
+  }
+
+  .servicios-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .servicio-card {
+    background: var(--black);
+    padding: 40px 32px;
+    transition: background 0.3s;
+    cursor: default;
+  }
+
+  .servicio-card:hover { background: #111; }
+
+  .servicio-icon {
+    width: 44px; height: 44px; margin-bottom: 24px;
+    stroke: var(--accent); stroke-width: 1.2; fill: none;
+  }
+
+  .servicio-num {
+    font-size: 10px; letter-spacing: 0.2em; color: var(--gray-500);
+    margin-bottom: 16px;
+  }
+
+  .servicio-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 400;
+    margin-bottom: 12px; line-height: 1.2;
+  }
+
+  .servicio-desc {
+    font-size: 12px; color: var(--gray-500); line-height: 1.7;
+  }
+
+  /* ── PROYECTO SAN JOSÉ ── */
+  #proyecto {
+    padding: 100px 60px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+
+  .proyecto-left {}
+
+  .proyecto-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    font-weight: 300; line-height: 1.1; margin-bottom: 24px;
+  }
+
+  .proyecto-desc {
+    color: var(--gray-300); font-size: 13px; line-height: 1.8; margin-bottom: 40px;
+  }
+
+  .proyecto-specs {
+    display: flex; flex-direction: column; gap: 0;
+    border: 1px solid var(--line);
+  }
+
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+  }
+
+  .spec-row:last-child { border-bottom: none; }
+  .spec-key { color: var(--gray-500); }
+  .spec-val { color: var(--accent); }
+
+  .proyecto-right {
+    position: relative;
+  }
+
+  .proyecto-visual {
+    aspect-ratio: 3/4;
+    border: 1px solid var(--line);
+    background: #0f0f0f;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .proyecto-visual-inner {
+    width: 70%; height: 70%;
+    border: 1px solid rgba(196,147,63,0.2);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .pv-triangle {
+    width: 60%; opacity: 0.6;
+    stroke: var(--accent); stroke-width: 0.8; fill: none;
+  }
+
+  .pv-lines {
+    position: absolute; inset: -40px;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .pv-label {
+    position: absolute; bottom: 24px; right: 24px;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--gray-500);
+    text-transform: uppercase;
+  }
+
+  .pv-badge {
+    position: absolute; top: -1px; left: -1px;
+    background: var(--accent); color: var(--black);
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 8px 16px;
+  }
+
+  /* ── NOSOTROS ── */
+  #nosotros { padding: 100px 60px; }
+
+  .nosotros-grid {
+    display: grid; grid-template-columns: 1fr 2fr;
+    gap: 80px; align-items: start;
+  }
+
+  .nosotros-left {}
+
+  .nosotros-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    font-weight: 300; line-height: 1.1;
+  }
+
+  .nosotros-right {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .valor {
+    padding: 32px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .valor-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; margin-bottom: 12px;
+    color: var(--white);
+  }
+
+  .valor-desc {
+    font-size: 12px; color: var(--gray-500); line-height: 1.7;
+  }
+
+  .nosotros-statement {
+    grid-column: 1 / -1;
+    border: 1px solid var(--line); padding: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2vw, 24px); font-weight: 300;
+    font-style: italic; line-height: 1.5; color: var(--gray-300);
+  }
+
+  .nosotros-statement span { color: var(--accent); font-style: normal; }
+
+  /* ── PRESUPUESTO ── */
+  #presupuesto { padding: 100px 60px; }
+
+  .pres-header {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; margin-bottom: 72px; align-items: end;
+  }
+
+  .pres-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300; line-height: 1.1;
+  }
+
+  .pres-desc {
+    color: var(--gray-300); font-size: 13px; line-height: 1.8;
+  }
+
+  .paquetes-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px; background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .paquete {
+    background: var(--black); padding: 40px 32px;
+    display: flex; flex-direction: column;
+    transition: background 0.3s;
+    position: relative;
+  }
+
+  .paquete:hover { background: #0d0d0d; }
+
+  .paquete.featured {
+    background: #0f0e0c;
+    border: 1px solid rgba(196,147,63,0.4);
+    margin: -1px;
+    z-index: 1;
+  }
+
+  .paquete.featured::before {
+    content: 'Más completo';
+    position: absolute; top: -1px; right: 20px;
+    background: var(--accent); color: var(--black);
+    font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 6px 14px;
+  }
+
+  .paq-num {
+    font-size: 10px; letter-spacing: 0.2em; color: var(--gray-500);
+    margin-bottom: 16px;
+  }
+
+  .paq-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px; font-weight: 400; margin-bottom: 24px;
+    line-height: 1.2; color: var(--white);
+  }
+
+  .paq-includes {
+    list-style: none; flex: 1;
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .paq-includes li {
+    font-size: 11px; color: var(--gray-300);
+    padding-left: 16px; position: relative; line-height: 1.5;
+  }
+
+  .paq-includes li::before {
+    content: '→'; position: absolute; left: 0;
+    color: var(--accent); font-size: 10px;
+  }
+
+  .paq-btn {
+    display: block; text-align: center;
+    padding: 14px 24px;
+    border: 1px solid var(--line);
+    color: var(--gray-300); font-size: 11px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none; cursor: pointer;
+    background: none; width: 100%;
+    font-family: 'Geist Mono', monospace;
+    transition: all 0.25s;
+  }
+
+  .paq-btn:hover, .featured .paq-btn {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .featured .paq-btn:hover {
+    background: var(--accent); color: var(--black);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: #0f0f0f; border: 1px solid var(--line);
+    width: 100%; max-width: 540px; padding: 48px;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute; top: 20px; right: 20px;
+    background: none; border: none; color: var(--gray-500);
+    font-size: 20px; cursor: pointer; line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--white); }
+
+  .modal-tag {
+    font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px;
+  }
+
+  .modal-pkg {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300; margin-bottom: 32px; color: var(--white);
+  }
+
+  .modal form {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+
+  .form-group {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .form-group label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gray-500);
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: #000; border: 1px solid var(--line);
+    color: var(--white); padding: 14px 16px;
+    font-family: 'Geist Mono', monospace; font-size: 13px;
+    outline: none; transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--accent);
+  }
+
+  .form-group textarea { min-height: 100px; resize: vertical; }
+
+  .form-group select option { background: #111; }
+
+  .form-submit {
+    padding: 16px; background: var(--accent); color: var(--black);
+    border: none; font-family: 'Geist Mono', monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: pointer; transition: background 0.25s;
+  }
+
+  .form-submit:hover { background: var(--accent-light); }
+
+  .form-note {
+    font-size: 11px; color: var(--gray-500); text-align: center;
+  }
+
+  /* ── CONTACTO ── */
+  #contacto {
+    padding: 100px 60px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+
+  .contacto-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    font-weight: 300; line-height: 1.1;
+  }
+
+  .contacto-info {
+    display: flex; flex-direction: column; gap: 0;
+    border: 1px solid var(--line);
+  }
+
+  .contact-row {
+    display: flex; gap: 24px; align-items: flex-start;
+    padding: 24px 28px; border-bottom: 1px solid var(--line);
+  }
+
+  .contact-row:last-child { border-bottom: none; }
+
+  .contact-icon {
+    width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;
+    stroke: var(--accent); stroke-width: 1.5; fill: none;
+  }
+
+  .contact-key {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gray-500); margin-bottom: 4px;
+  }
+
+  .contact-val {
+    font-size: 13px; color: var(--white);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 40px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .footer-logo {
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-weight: 300; letter-spacing: 0.15em;
+    color: var(--gray-500);
+  }
+
+  .footer-logo svg {
+    width: 22px; height: 22px;
+    stroke: var(--gray-500); stroke-width: 1.2; fill: none;
+  }
+
+  .footer-copy {
+    font-size: 11px; color: var(--gray-500);
+  }
+
+  /* ── ANIMATIONS ── */
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 40px 24px; border-right: none; border-bottom: 1px solid var(--line); }
+    .hero-right { padding: 40px 24px; }
+    #servicios, #nosotros, #presupuesto, #contacto { padding: 60px 24px; }
+    .servicios-grid, .paquetes-grid { grid-template-columns: 1fr; }
+    .servicios-header, .pres-header, .nosotros-grid { grid-template-columns: 1fr; gap: 32px; }
+    #proyecto { grid-template-columns: 1fr; padding: 60px 24px; }
+    #contacto { grid-template-columns: 1fr; }
+    .nosotros-right { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+    .modal { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg viewBox="0 0 100 87" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,4 96,83 4,83"/>
+      <polygon points="50,24 78,73 22,73"/>
+    </svg>
+    <span>Altus Ingeniería</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#proyecto">Proyecto</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li><a href="#presupuesto" class="nav-cta">Presupuesto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Asesoría · Diseño · Construcción</div>
+    <h1 class="hero-title">
+      Ingeniería<br>
+      de <em>alto</em><br>
+      estándar
+    </h1>
+    <p class="hero-desc">
+      Proyectos residenciales y comerciales con visión integral: arquitectura, cálculo estructural, instalaciones y ejecución — bajo un solo equipo técnico.
+    </p>
+    <a href="#presupuesto" class="hero-btn">
+      Solicitar presupuesto
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+  <div class="hero-right">
+    <div class="hero-grid-bg"></div>
+    <svg class="hero-triangle" viewBox="0 0 100 87" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,2 98,85 2,85" stroke="var(--accent)" stroke-width="0.5" fill="none"/>
+      <polygon points="50,18 82,75 18,75" stroke="var(--accent)" stroke-width="0.3" fill="none"/>
+    </svg>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">10+</div>
+        <div class="stat-label">Años de experiencia</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Proyectos supervisados</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">360°</div>
+        <div class="stat-label">Visión de proyecto</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Especialidades integradas</div>
+      </div>
+    </div>
+    <div class="project-badge">
+      <div class="badge-dot"></div>
+      <div style="flex:1; min-width:0;">
+        <div class="badge-text">En desarrollo activo</div>
+        <div class="badge-projects">
+          <div class="badge-title">Conjunto Residencial San José — San Cristóbal, Táchira</div>
+          <div class="badge-title">Vivienda Unifamiliar — La Laguna, Palmira, Táchira</div>
+          <div class="badge-title">Vivienda Unifamiliar — Urb. Victoria Suite, Boca de Caneyes, Táchira</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="section-label">Nuestros servicios</div>
+  <div class="servicios-header reveal">
+    <h2 class="servicios-title">Soluciones técnicas para cada etapa del proyecto</h2>
+    <p class="servicios-desc">Desde la primera consulta hasta la entrega de obra, cubrimos cada disciplina con profesionales especializados y experiencia comprobada en el sector.</p>
+  </div>
+  <div class="servicios-grid">
+    <div class="servicio-card reveal">
+      <svg class="servicio-icon" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/>
+      </svg>
+      <div class="servicio-num">01</div>
+      <div class="servicio-name">Proyecto Arquitectónico</div>
+      <div class="servicio-desc">Diseño funcional y estético adaptado a las necesidades del cliente, con entrega en planos, plantas, fachadas y cortes.</div>
+    </div>
+    <div class="servicio-card reveal">
+      <svg class="servicio-icon" viewBox="0 0 24 24">
+        <polygon points="12,2 22,20 2,20"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+      </svg>
+      <div class="servicio-num">02</div>
+      <div class="servicio-name">Cálculo Estructural</div>
+      <div class="servicio-desc">Modelado y análisis estructural con software especializado, memorias de cálculo completas según normativa aplicable.</div>
+    </div>
+    <div class="servicio-card reveal">
+      <svg class="servicio-icon" viewBox="0 0 24 24">
+        <path d="M12 22V12M12 12L8 8M12 12L16 8"/><circle cx="12" cy="6" r="3"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      <div class="servicio-num">03</div>
+      <div class="servicio-name">Instalaciones Sanitarias</div>
+      <div class="servicio-desc">Diseño de redes de aguas blancas, negras y pluviales integradas al proyecto arquitectónico.</div>
+    </div>
+    <div class="servicio-card reveal">
+      <svg class="servicio-icon" viewBox="0 0 24 24">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+      </svg>
+      <div class="servicio-num">04</div>
+      <div class="servicio-name">Instalaciones Eléctricas</div>
+      <div class="servicio-desc">Proyecto eléctrico completo: tableros, circuitos, iluminación y tomacorrientes con cómputos métricos.</div>
+    </div>
+    <div class="servicio-card reveal">
+      <svg class="servicio-icon" viewBox="0 0 24 24">
+        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>
+      </svg>
+      <div class="servicio-num">05</div>
+      <div class="servicio-name">Cómputos Métricos</div>
+      <div class="servicio-desc">Cuantificación detallada de materiales y actividades, base para presupuestos precisos y control de obra.</div>
+    </div>
+    <div class="servicio-card reveal">
+      <svg class="servicio-icon" viewBox="0 0 24 24">
+        <path d="M2 20h20M4 20V10l8-6 8 6v10"/><path d="M10 20v-6h4v6"/>
+      </svg>
+      <div class="servicio-num">06</div>
+      <div class="servicio-name">Ejecución e Inspección</div>
+      <div class="servicio-desc">Acompañamiento técnico durante la construcción por los profesionales proyectistas, garantizando fidelidad al proyecto.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROYECTO SAN JOSÉ -->
+<section id="proyecto">
+  <div class="proyecto-left reveal">
+    <div class="section-label" style="margin-bottom:32px;">Proyecto en desarrollo</div>
+    <h2 class="proyecto-title">Conjunto Residencial San José</h2>
+    <p class="proyecto-desc">
+      Desarrollo residencial multifamiliar y comercial en San Cristóbal, Táchira. Un proyecto que consolida la metodología integral de Altus: desde el diseño arquitectónico hasta la inspección de obra, con equipo propio en cada etapa.
+    </p>
+    <div class="proyecto-specs">
+      <div class="spec-row">
+        <span class="spec-key">Tipología</span>
+        <span class="spec-val">Residencial + Comercio PB</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Configuración</span>
+        <span class="spec-val">2 bloques · PB + 3 niveles</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Unidades</span>
+        <span class="spec-val">~32 apartamentos</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Ubicación</span>
+        <span class="spec-val">San Cristóbal, Táchira</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-key">Estado</span>
+        <span class="spec-val">En ejecución</span>
+      </div>
+    </div>
+  </div>
+  <div class="proyecto-right reveal">
+    <div class="proyecto-visual">
+      <div class="pv-lines"></div>
+      <div class="proyecto-visual-inner">
+        <svg class="pv-triangle" viewBox="0 0 100 87">
+          <polygon points="50,4 96,83 4,83"/>
+          <polygon points="50,22 78,73 22,73"/>
+        </svg>
+      </div>
+      <div class="pv-badge">En desarrollo</div>
+      <div class="pv-label">San José · Táchira · 2024–2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros">
+  <div class="section-label">Quiénes somos</div>
+  <div class="nosotros-grid">
+    <div class="nosotros-left reveal">
+      <h2 class="nosotros-title">Personal técnico. Visión integral.</h2>
+    </div>
+    <div class="nosotros-right">
+      <div class="nosotros-statement reveal">
+        Altus Ingeniería nace de la convicción de que un proyecto bien ejecutado requiere <span>dominio técnico</span> en cada disciplina y <span>coordinación real</span> entre ellas.
+      </div>
+      <div class="valor reveal">
+        <div class="valor-title">Experiencia comprobada</div>
+        <div class="valor-desc">Años de trabajo en ingeniería civil y arquitectura, con proyectos residenciales y comerciales en Venezuela y el exterior.</div>
+      </div>
+      <div class="valor reveal">
+        <div class="valor-title">Equipo multidisciplinar</div>
+        <div class="valor-desc">Ingenieros civiles, arquitectos y especialistas en instalaciones trabajando bajo una misma coordinación técnica.</div>
+      </div>
+      <div class="valor reveal">
+        <div class="valor-title">Transparencia en proceso</div>
+        <div class="valor-desc">El cliente sigue cada etapa: reuniones de avance, documentos técnicos accesibles y comunicación directa con los proyectistas.</div>
+      </div>
+      <div class="valor reveal">
+        <div class="valor-title">Normativa y rigor</div>
+        <div class="valor-desc">Proyectos desarrollados conforme a las normas técnicas aplicables, con memorias de cálculo completas y respaldo documental.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESUPUESTO -->
+<section id="presupuesto">
+  <div class="section-label">Solicitar presupuesto</div>
+  <div class="pres-header reveal">
+    <h2 class="pres-title">Elige el alcance de tu proyecto</h2>
+    <p class="pres-desc">Selecciona el paquete que mejor se adapte a tus necesidades. Cada opción incluye una reunión inicial de consulta técnica y elaboración de presupuesto sin compromiso.</p>
+  </div>
+  <div class="paquetes-grid">
+
+    <div class="paquete reveal">
+      <div class="paq-num">01</div>
+      <div class="paq-name">Consulta Técnica</div>
+      <ul class="paq-includes">
+        <li>Reunión de consulta técnica</li>
+        <li>Elaboración de presupuesto de proyecto</li>
+      </ul>
+      <button class="paq-btn" onclick="openModal('Consulta Técnica')">Solicitar</button>
+    </div>
+
+    <div class="paquete reveal">
+      <div class="paq-num">02</div>
+      <div class="paq-name">Proyecto Arquitectónico</div>
+      <ul class="paq-includes">
+        <li>Reunión de consulta técnica + presupuesto</li>
+        <li>Proyecto de arquitectura completo</li>
+        <li>Reunión de pre-entrega para ajustes</li>
+        <li>Reunión de entrega definitiva</li>
+        <li>Instalaciones sanitarias incluidas</li>
+      </ul>
+      <button class="paq-btn" onclick="openModal('Proyecto Arquitectónico')">Solicitar</button>
+    </div>
+
+    <div class="paquete reveal">
+      <div class="paq-num">03</div>
+      <div class="paq-name">Proyecto Integral</div>
+      <ul class="paq-includes">
+        <li>Todo lo del paquete anterior</li>
+        <li>Cálculo estructural completo</li>
+        <li>Memorias de cálculo estructural</li>
+      </ul>
+      <button class="paq-btn" onclick="openModal('Proyecto Integral')">Solicitar</button>
+    </div>
+
+    <div class="paquete reveal">
+      <div class="paq-num">04</div>
+      <div class="paq-name">Integral + Cómputos</div>
+      <ul class="paq-includes">
+        <li>Todo lo del paquete anterior</li>
+        <li>Cómputos métricos completos de todo el proyecto</li>
+      </ul>
+      <button class="paq-btn" onclick="openModal('Proyecto Integral + Cómputos')">Solicitar</button>
+    </div>
+
+    <div class="paquete featured reveal">
+      <div class="paq-num">05</div>
+      <div class="paq-name">Proyecto Completo</div>
+      <ul class="paq-includes">
+        <li>Todo lo del paquete anterior</li>
+        <li>Instalaciones eléctricas completas</li>
+        <li>Cómputos métricos de instalaciones eléctricas</li>
+      </ul>
+      <button class="paq-btn" onclick="openModal('Proyecto Completo')">Solicitar</button>
+    </div>
+
+    <div class="paquete reveal">
+      <div class="paq-num">06</div>
+      <div class="paq-name">Llave en Mano</div>
+      <ul class="paq-includes">
+        <li>Todo lo del paquete anterior</li>
+        <li>Ejecución de obra</li>
+        <li>Acompañamiento técnico por los proyectistas durante toda la construcción</li>
+      </ul>
+      <button class="paq-btn" onclick="openModal('Llave en Mano')">Solicitar</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="reveal">
+    <div class="section-label" style="margin-bottom:32px;">Contacto directo</div>
+    <h2 class="contacto-title">Hablemos de tu proyecto</h2>
+  </div>
+  <div class="contacto-info reveal">
+    <div class="contact-row">
+      <svg class="contact-icon" viewBox="0 0 24 24">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+      </svg>
+      <div>
+        <div class="contact-key">Teléfono / WhatsApp</div>
+        <div class="contact-val">+58 000 000 0000</div>
+      </div>
+    </div>
+    <div class="contact-row">
+      <svg class="contact-icon" viewBox="0 0 24 24">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+      </svg>
+      <div>
+        <div class="contact-key">Correo electrónico</div>
+        <div class="contact-val">contacto@altus-ingenieria.com</div>
+      </div>
+    </div>
+    <div class="contact-row">
+      <svg class="contact-icon" viewBox="0 0 24 24">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+      </svg>
+      <div>
+        <div class="contact-key">Ubicación</div>
+        <div class="contact-val">San Cristóbal, Táchira, Venezuela</div>
+      </div>
+    </div>
+    <div class="contact-row">
+      <svg class="contact-icon" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
+      </svg>
+      <div>
+        <div class="contact-key">Horario de atención</div>
+        <div class="contact-val">Lunes a Viernes · 8:00 AM – 6:00 PM</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <svg viewBox="0 0 100 87">
+      <polygon points="50,4 96,83 4,83"/>
+      <polygon points="50,24 78,73 22,73"/>
+    </svg>
+    Altus Ingeniería
+  </div>
+  <div class="footer-copy">© 2026 Altus Ingeniería · Todos los derechos reservados</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-tag">Solicitud de presupuesto</div>
+    <div class="modal-pkg" id="modalPkg">Paquete seleccionado</div>
+    <form onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" placeholder="Tu nombre" required>
+      </div>
+      <div class="form-group">
+        <label>Teléfono / WhatsApp</label>
+        <input type="tel" placeholder="+58 000 000 0000" required>
+      </div>
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" placeholder="correo@ejemplo.com">
+      </div>
+      <div class="form-group">
+        <label>Describe brevemente tu proyecto</label>
+        <textarea placeholder="Tipo de proyecto, ubicación, m², etapa actual..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">Enviar solicitud</button>
+      <div class="form-note">Te contactaremos en menos de 24 horas hábiles</div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Modal
+  function openModal(pkg) {
+    document.getElementById('modalPkg').textContent = pkg;
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = '✓ Solicitud enviada';
+    btn.style.background = '#2a6b3c';
+    setTimeout(closeModal, 1800);
+  }
+
+  // Scroll-driven section label font growth
+  const sectionLabels = document.querySelectorAll('section .section-label');
+
+  function updateLabelSizes() {
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = Math.min(window.scrollY / maxScroll, 1);
+    const size = 10 + progress * 4;
+    sectionLabels.forEach(el => { el.style.fontSize = size + 'px'; });
+  }
+
+  window.addEventListener('scroll', updateLabelSizes, { passive: true });
+  updateLabelSizes();
+</script>
+</body>
+</html>
