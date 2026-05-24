@@ -1303,6 +1303,12 @@
   // Modal
   function openModal(pkg) {
     document.getElementById('modalPkg').textContent = pkg;
+    document.getElementById('formPaquete').value = pkg;
+    // Reset submit button state
+    const btn = document.getElementById('formSubmitBtn');
+    btn.textContent = 'Enviar solicitud';
+    btn.style.background = '';
+    btn.disabled = false;
     const label = document.getElementById('modalTextareaLabel');
     const textarea = document.getElementById('modalTextarea');
     if (pkg.includes('San José') || pkg.includes('San Jose')) {
@@ -1328,12 +1334,37 @@
     if (e.target === document.getElementById('modalOverlay')) closeModal();
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const btn = e.target.querySelector('.form-submit');
-    btn.textContent = '✓ Solicitud enviada';
-    btn.style.background = '#2a6b3c';
-    setTimeout(closeModal, 1800);
+    const btn = document.getElementById('formSubmitBtn');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    const form = document.getElementById('contactForm');
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch('https://formspree.io/f/mkoezkog', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (res.ok) {
+        btn.textContent = '✓ Solicitud enviada';
+        btn.style.background = '#2a6b3c';
+        form.reset();
+        setTimeout(closeModal, 2000);
+      } else {
+        btn.textContent = 'Error — intenta de nuevo';
+        btn.style.background = '#8b2020';
+        btn.disabled = false;
+      }
+    } catch (err) {
+      btn.textContent = 'Error de conexión';
+      btn.style.background = '#8b2020';
+      btn.disabled = false;
+    }
   }
 
   // Scroll-driven section label font growth
