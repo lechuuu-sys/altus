@@ -909,6 +909,83 @@
 </head>
 <body>
 
+<!-- BANNER SISMOS -->
+<div id="sismoBanner" style="background:linear-gradient(135deg,#1a0f00,#2a1500);border-bottom:2px solid #c4933f;padding:0;position:relative;z-index:200;">
+  <div style="max-width:1200px;margin:0 auto;padding:40px 60px;">
+    <div style="display:flex;align-items:flex-start;gap:24px;margin-bottom:28px;">
+      <div style="flex-shrink:0;width:48px;height:48px;border:1.5px solid #c4933f;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c4933f" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <div>
+        <div style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#c4933f;margin-bottom:8px;">Inspección técnica gratuita</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.5vw,30px);font-weight:300;color:#f5f3ef;line-height:1.3;margin-bottom:10px;">¿Tu estructura se ha visto afectada por los recientes sismos en la región central?</h3>
+        <p style="color:#b8b3aa;font-size:14px;line-height:1.7;max-width:700px;">Nuestro equipo técnico ofrece una <strong style="color:#e8c87a;">inspección estructural completamente gratuita</strong> para evaluar el estado actual de tu edificación. Completa el formulario y nos pondremos en contacto para coordinar los detalles.</p>
+      </div>
+      <button onclick="document.getElementById('sismoBanner').style.display='none'" style="flex-shrink:0;background:none;border:none;color:#7a756c;font-size:22px;cursor:pointer;line-height:1;margin-left:auto;">✕</button>
+    </div>
+    <form id="sismoForm" onsubmit="submitSismoForm(event)" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:16px;align-items:end;">
+      <div>
+        <label style="display:block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#7a756c;margin-bottom:8px;">Dirección de la edificación</label>
+        <input type="text" name="direccion" placeholder="Urb., calle, municipio, estado" required
+          style="width:100%;background:#000;border:1px solid rgba(180,170,155,0.2);color:#f5f3ef;padding:12px 16px;font-family:'Geist Mono',monospace;font-size:13px;outline:none;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='#c4933f'" onblur="this.style.borderColor='rgba(180,170,155,0.2)'">
+      </div>
+      <div>
+        <label style="display:block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#7a756c;margin-bottom:8px;">Descripción de la estructura</label>
+        <input type="text" name="descripcion" placeholder="Ej: vivienda unifamiliar 2 niveles, bloque" required
+          style="width:100%;background:#000;border:1px solid rgba(180,170,155,0.2);color:#f5f3ef;padding:12px 16px;font-family:'Geist Mono',monospace;font-size:13px;outline:none;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='#c4933f'" onblur="this.style.borderColor='rgba(180,170,155,0.2)'">
+      </div>
+      <div>
+        <label style="display:block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#7a756c;margin-bottom:8px;">Tu correo electrónico</label>
+        <input type="email" name="email" placeholder="correo@ejemplo.com" required
+          style="width:100%;background:#000;border:1px solid rgba(180,170,155,0.2);color:#f5f3ef;padding:12px 16px;font-family:'Geist Mono',monospace;font-size:13px;outline:none;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='#c4933f'" onblur="this.style.borderColor='rgba(180,170,155,0.2)'">
+      </div>
+      <button type="submit" id="sismoSubmitBtn"
+        style="padding:12px 28px;background:#c4933f;color:#0a0a0a;border:none;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background 0.25s;">
+        Solicitar inspección
+      </button>
+    </form>
+    <p style="margin-top:14px;font-size:12px;color:#7a756c;line-height:1.6;">
+      Una vez recibido el formulario, envíanos todas las fotos posibles de tu estructura a 
+      <a href="mailto:contacto@altusingenieria.com" style="color:#c4933f;text-decoration:none;">contacto@altusingenieria.com</a>. 
+      Nuestro equipo se pondrá en contacto para coordinar la inspección.
+    </p>
+  </div>
+</div>
+
+<script>
+async function submitSismoForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('sismoSubmitBtn');
+  btn.textContent = 'Enviando...'; btn.disabled = true;
+  const data = new FormData(document.getElementById('sismoForm'));
+  data.append('tipo', 'Inspección sísmica gratuita');
+  try {
+    const res = await fetch('https://formspree.io/f/mkoezkog', {
+      method: 'POST', body: data, headers: {'Accept': 'application/json'}
+    });
+    if (res.ok) {
+      btn.textContent = '✓ Solicitud enviada';
+      btn.style.background = '#2a6b3c';
+      document.getElementById('sismoForm').reset();
+      setTimeout(() => { document.getElementById('sismoBanner').style.display = 'none'; }, 3000);
+    } else {
+      btn.textContent = 'Error — intenta de nuevo';
+      btn.style.background = '#8b2020'; btn.disabled = false;
+    }
+  } catch {
+    btn.textContent = 'Error de conexión';
+    btn.style.background = '#8b2020'; btn.disabled = false;
+  }
+}
+</script>
+
+
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
