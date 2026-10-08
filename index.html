@@ -1081,7 +1081,7 @@ body{
   window.addEventListener('resize',onScroll);onScroll();
 
   // seccion activa en el menu
-  var links=[].slice.call(D.querySelectorAll('.nav-links a[href^="#"]'));
+  var links=[].slice.call(D.querySelectorAll('.nav-links a[href^="#"]')).filter(function(a){return a.getAttribute('href').length>1;});
   var secs=links.map(function(a){return D.querySelector(a.getAttribute('href'))}).filter(Boolean);
   if(secs.length){
     var sio=new IntersectionObserver(function(es){

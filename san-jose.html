@@ -696,6 +696,17 @@ body{
   .js .svc-ico > *{stroke-dashoffset:0}
   [data-par]{transform:none!important}
 }
+
+.m3d-cta{display:flex;align-items:center;gap:26px;margin:0 0 30px;padding:22px 26px;border:1px solid rgba(196,147,63,.35);
+  background:rgba(196,147,63,.04);text-decoration:none;color:var(--paper);transition:background .35s,border-color .35s}
+.m3d-cta:hover{background:rgba(196,147,63,.09);border-color:var(--gold)}
+.m3d-cta svg{width:58px;height:44px;color:var(--gold);flex-shrink:0;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.m3d-cta:hover svg{transform:rotate(-8deg) scale(1.06)}
+.m3d-tx{display:flex;flex-direction:column;gap:5px;flex:1}
+.m3d-tx b{font-family:'Archivo',sans-serif;font-weight:500;font-size:18px;letter-spacing:-.015em}
+.m3d-s{font-size:13px;color:var(--graphite);font-weight:300}
+.m3d-go{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+@media(max-width:760px){.m3d-cta{flex-direction:column;align-items:flex-start;gap:14px;padding:20px}}
 </style>
 <!-- SEO META -->
   <meta name="description" content="Conjunto Residencial San José — apartamentos en venta en San Cristóbal, Táchira. 2 y 3 habitaciones, 74-80m², terraza comunal, financiamiento hasta 24 meses. Ideal para venezolanos en el exterior.">
@@ -770,6 +781,7 @@ body{
   <ul class="nav-links">
     <li><a href="#proyecto">El proyecto</a></li>
     <li><a href="#tipologias">Apartamentos</a></li>
+    <li><a href="maqueta-3d.html">Maqueta 3D</a></li>
     <li><a href="#renders">Renders</a></li>
     <li><a href="#avances">Avances</a></li>
     <li><a href="#ubicacion">Ubicación</a></li>
@@ -848,6 +860,11 @@ body{
       <h2 class="h-display h2 rv">Elige tu <em>tipología</em></h2>
       <p class="lede rv">Seis configuraciones para distintos estilos de vida. Todas incluyen cocina, área de servicios, baño completo de visita y habitación principal con baño.</p>
     </div>
+    <a href="maqueta-3d.html" class="m3d-cta rv">
+      <svg viewBox="0 0 64 48" aria-hidden="true"><path d="M8 38 L32 46 L56 38 L56 14 L32 6 L8 14 Z M8 14 L32 22 L56 14 M32 22 L32 46" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 26 L32 34 L56 26" fill="none" stroke="currentColor" stroke-width="1" opacity=".5"/></svg>
+      <span class="m3d-tx"><span class="tag tag-gold">Nuevo · LÁM. 09</span><b>Explora el conjunto en 3D y elige tu apartamento</b><span class="m3d-s">Gira la maqueta, aísla cada nivel y abre la planta de cualquiera de las 32 unidades.</span></span>
+      <span class="m3d-go">Abrir maqueta →</span>
+    </a>
     <div class="rv">
       <div class="tabs" role="tablist">
         <button class="tab on" data-t="0">2 Hab · PB · 74 m²</button>
@@ -1128,7 +1145,7 @@ body{
   window.addEventListener('resize',onScroll);onScroll();
 
   // seccion activa en el menu
-  var links=[].slice.call(D.querySelectorAll('.nav-links a[href^="#"]'));
+  var links=[].slice.call(D.querySelectorAll('.nav-links a[href^="#"]')).filter(function(a){return a.getAttribute('href').length>1;});
   var secs=links.map(function(a){return D.querySelector(a.getAttribute('href'))}).filter(Boolean);
   if(secs.length){
     var sio=new IntersectionObserver(function(es){
