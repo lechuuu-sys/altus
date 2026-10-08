@@ -545,14 +545,14 @@ body{background:var(--ink)}
 .lgd{position:absolute;right:24px;top:22px;z-index:5;border:1px solid var(--rule);
   background:rgba(6,14,25,.72);backdrop-filter:blur(8px);padding:12px 14px 8px;min-width:220px;transition:opacity .35s,transform .45s cubic-bezier(.2,.8,.2,1)}
 .lgd .tag{display:block;margin-bottom:8px}
-.lgd button{display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;
+.lgd [data-tipo]{display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;
   padding:7px 0;cursor:pointer;text-align:left;color:var(--graphite);border-top:1px solid var(--rule-soft);transition:color .25s}
-.lgd button:first-of-type{border-top:none}
-.lgd button:hover,.lgd button.on{color:var(--paper)}
-.lgd i{width:9px;height:9px;border:1px solid var(--gold);flex-shrink:0;transition:background .25s}
-.lgd button:hover i,.lgd button.on i{background:var(--gold)}
+.lgd [data-tipo]:first-of-type{border-top:none}
+.lgd [data-tipo]:hover,.lgd [data-tipo].on{color:var(--paper)}
+.lgd [data-tipo] i{width:9px;height:9px;border:1px solid var(--gold);flex-shrink:0;transition:background .25s}
+.lgd [data-tipo]:hover i,.lgd [data-tipo].on i{background:var(--gold)}
 .lgd b{font-family:'Archivo',sans-serif;font-weight:500;font-size:13px;color:inherit}
-.lgd span{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.08em;color:var(--graphite-dim);margin-left:auto;white-space:nowrap}
+.lgd [data-tipo] span,.lgd-st span{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.08em;color:var(--graphite-dim);margin-left:auto;white-space:nowrap}
 .stage.pnl-open .lgd{opacity:0;pointer-events:none;transform:translateX(20px)}
 
 /* tooltip y rótulos */
@@ -653,6 +653,48 @@ body{background:var(--ink)}
   .pnl,.lgd{transition:none}
   .load .bar::after{animation:none}
 }
+
+/* disponibilidad */
+.lgd-sw{display:flex;border:1px solid var(--rule);margin:-2px 0 12px}
+.lgd-sw button{flex:1;background:none;border:none;color:var(--graphite);cursor:pointer;font-family:'JetBrains Mono',monospace;
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:8px 10px;transition:background .25s,color .25s}
+.lgd-sw button+button{border-left:1px solid var(--rule)}
+.lgd-sw button.on{background:var(--gold);color:var(--ink)}
+.lgd-sw .n{display:none}
+.lgd-st{display:flex;align-items:center;gap:11px;padding:6px 0;border-top:1px solid var(--rule-soft);color:var(--paper)}
+.lgd-st:first-of-type{border-top:none}
+.lgd-st b{font-family:'Archivo',sans-serif;font-weight:500;font-size:13px}
+.lgd-st i,.u i,.st-b i{width:9px;height:9px;flex-shrink:0;display:inline-block}
+.sd{background:#b3d3b9}.sr{background:#e7b45f}.sv{background:#c77d72}
+.lgd-gap{height:10px}
+.lgd-live{display:flex;align-items:center;gap:7px;margin:10px 0 2px;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:var(--graphite-dim);text-transform:uppercase}
+.lgd-live i{width:6px;height:6px;border-radius:50%;background:#b3d3b9;box-shadow:0 0 0 0 rgba(179,211,185,.6);animation:live 2s infinite}
+@keyframes live{70%{box-shadow:0 0 0 6px rgba(179,211,185,0)}100%{box-shadow:0 0 0 0 rgba(179,211,185,0)}}
+.st-b{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+.st-b.disponible{color:#b3d3b9}.st-b.reservado{color:#e7b45f}.st-b.vendido{color:#d99085}
+.st-b.disponible i{background:#b3d3b9}.st-b.reservado i{background:#e7b45f}.st-b.vendido i{background:#c77d72}
+.u i{position:absolute;top:7px;right:7px;width:6px;height:6px;border-radius:50%}
+.u[data-st=disponible] i{background:#b3d3b9}
+.u[data-st=reservado] i{background:#e7b45f}
+.u[data-st=vendido] i{background:#c77d72}
+.u[data-st=vendido] b{color:var(--graphite-dim);text-decoration:line-through;text-decoration-color:rgba(199,125,114,.7)}
+.u .s2{display:block;margin-top:2px;font-size:8px;letter-spacing:.12em;text-transform:uppercase}
+.u[data-st=reservado] .s2{color:#e7b45f}.u[data-st=vendido] .s2{color:#c77d72}.u[data-st=disponible] .s2{color:#b3d3b9}
+.u.on .s2{color:var(--ink)}
+.u-key{display:flex;gap:22px;flex-wrap:wrap;margin:-10px 0 34px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--graphite);text-transform:uppercase}
+.u-key span{display:inline-flex;align-items:center;gap:8px}
+.u-key i{width:8px;height:8px;border-radius:50%;display:inline-block}
+@media(max-width:760px){
+  .lgd{display:flex;align-items:center;gap:10px;top:auto;bottom:104px;left:12px;right:12px;min-width:0;padding:6px 8px}
+  .lgd #lgdT,.lgd .tag,.lgd-live,.lgd-gap,.lgd-st span,.lgd-st.lgd-pk{display:none}
+  #lgdD:not([hidden]){display:flex;gap:12px;flex:1;justify-content:flex-end}
+  .lgd-sw{margin:0}.lgd-sw button{padding:6px 7px;font-size:8.5px;letter-spacing:.08em}
+  .lgd-sw .w{display:none}.lgd-sw .n{display:inline}
+  .lgd-st{padding:0;border:none;gap:6px}.lgd-st b{font-size:10.5px}
+  #lgdD:not([hidden]){gap:10px}
+  .stage.pnl-open .lgd{opacity:0}
+  #bl3{display:none!important}
+}
 .blbl.dim{opacity:.22}
 </style>
 
@@ -680,16 +722,30 @@ body{background:var(--ink)}
   <canvas id="cv" role="img" aria-label="Maqueta 3D del conjunto. Usa la lista de unidades para navegar con teclado."></canvas>
 
   <div class="ovl-tb">
-    <div class="code">LÁM. 09 · Maqueta interactiva</div>
+    <div class="code">LÁM. 02 · Maqueta interactiva</div>
     <h1>Elige tu <em>apartamento</em></h1>
     <p>Arrastra para girar · rueda o pellizco para acercar · toca una unidad o un puesto</p>
   </div>
 
   <div class="lgd" id="lgd">
-    <span class="tag">Tipologías</span>
-    <button data-tipo="P3"><i></i><b>Piso 3</b><span>80,23 m² · 2 terrazas</span></button>
-    <button data-tipo="P12"><i></i><b>Pisos 1 y 2</b><span>77,31 m² · 1 terraza</span></button>
-    <button data-tipo="PB"><i></i><b>Planta baja</b><span>74,55 m²</span></button>
+    <div class="lgd-sw" id="lgdSw" hidden><button data-m="disp"><span class="w">Disponibilidad</span><span class="n">Estado</span></button><button data-m="tipo"><span class="w">Tipologías</span><span class="n">Tipos</span></button></div>
+    <div id="lgdT">
+      <span class="tag">Tipologías</span>
+      <button data-tipo="P3"><i></i><b>Piso 3</b><span>80,23 m² · 2 terrazas</span></button>
+      <button data-tipo="P12"><i></i><b>Pisos 1 y 2</b><span>77,31 m² · 1 terraza</span></button>
+      <button data-tipo="PB"><i></i><b>Planta baja</b><span>74,55 m²</span></button>
+    </div>
+    <div id="lgdD" hidden>
+      <span class="tag">Apartamentos</span>
+      <div class="lgd-st"><i class="sd"></i><b>Disponible</b><span id="nAd">—</span></div>
+      <div class="lgd-st"><i class="sr"></i><b>Reservado</b><span id="nAr">—</span></div>
+      <div class="lgd-st"><i class="sv"></i><b>Vendido</b><span id="nAv">—</span></div>
+      <div class="lgd-gap"></div>
+      <span class="tag">Puestos de parking</span>
+      <div class="lgd-st lgd-pk"><i class="sd"></i><b>Disponible</b><span id="nEd">—</span></div>
+      <div class="lgd-st lgd-pk"><i class="sr"></i><b>Reservado</b><span id="nEr">—</span></div>
+      <p class="lgd-live"><i></i>En vivo · <span id="stT"></span></p>
+    </div>
   </div>
 
   <div class="ctl" id="ctl">
@@ -714,6 +770,7 @@ body{background:var(--ink)}
   <div class="tip" id="tip"><b></b><span></span></div>
   <div class="blbl" id="bl1">Edificio 1</div>
   <div class="blbl" id="bl2">Edificio 2</div>
+  <div class="blbl" id="bl3">Gymbox · Coworking</div>
 
   <div class="load" id="load"><div class="bar"></div><p id="loadMsg">Trazando la maqueta…</p></div>
 
@@ -741,11 +798,12 @@ body{background:var(--ink)}
 
 <section class="sheet" id="unidades">
   <div class="wrap">
-    <div class="titleblock rv"><span class="code">LÁM. 10</span><span class="name">Cuadro de unidades</span><span class="scale">32 APARTAMENTOS · 2 EDIFICIOS</span></div>
+    <div class="titleblock rv"><span class="code">LÁM. 02.1</span><span class="name">Cuadro de unidades</span><span class="scale">32 APARTAMENTOS · 2 EDIFICIOS</span></div>
     <div class="svc-head">
       <h2 class="h-display h2 rv">Cada edificio,<br>nivel por <em>nivel</em></h2>
       <p class="lede rv">Selecciona cualquier unidad para verla en la maqueta y abrir su planta. Los apartamentos A y B miran hacia el fondo del conjunto; C y D, hacia la vía principal.</p>
     </div>
+    <div class="u-key" id="uKey" hidden><span><i class="sd"></i>Disponible</span><span><i class="sr"></i>Reservado</span><span><i class="sv"></i>Vendido</span><span id="uKeyN"></span></div>
     <div class="bldgs" id="bldgs"></div>
   </div>
 </section>
@@ -826,7 +884,7 @@ body{background:var(--ink)}
       html += '<div class="flr"><div class="flr-l"><b>' + lv.sh + '</b><span>' + lv.cota + '</span></div>';
       LET.forEach(function (L) {
         var id = 'E' + b + '-' + lv.sh + '-' + L;
-        html += '<button class="u" data-id="' + id + '" aria-label="' + label(UNITS[id]) + ', ' + T.m2 + ' metros cuadrados"><b>' + L + '</b><span>' + T.m2 + ' m²</span></button>';
+        html += '<button class="u" data-id="' + id + '" aria-label="' + label(UNITS[id]) + ', ' + T.m2 + ' metros cuadrados"><i></i><b>' + L + '</b><span>' + T.m2 + ' m²</span><span class="s2"></span></button>';
       });
       html += '</div>';
     }
@@ -845,20 +903,23 @@ body{background:var(--ink)}
     $('pTag').textContent = 'Edificio ' + u.b + ' · ' + lv.name;
     $('pTit').innerHTML = 'Apartamento <em>' + u.L + '</em>';
     $('pCode').textContent = 'E' + u.b + ' · ' + lv.sh + ' · ' + u.L + ' — ' + lv.cota;
+    var st = ALT.ST ? ALT.stA(id) : null;
     $('pSpecs').innerHTML =
+      (st ? '<div><dt>Estado</dt><dd><span class="st-b ' + st + '"><i></i>' + ST_TXT[st] + '</span></dd></div>' : '') +
       '<div><dt>Superficie</dt><dd class="g">' + T.m2 + ' m²</dd></div>' +
       '<div><dt>Programa</dt><dd>2 habitaciones · 2 baños</dd></div>' +
       '<div><dt>Terrazas</dt><dd>' + T.terr + '</dd></div>' +
       '<div><dt>Nivel</dt><dd>' + lv.name + ' · ' + lv.cota + '</dd></div>' +
       '<div><dt>Cota de piso</dt><dd>' + cota(u) + ' m</dd></div>' +
       '<div><dt>Precio</dt><dd>Consultar</dd></div>';
+    $('pInfo').querySelector('span').firstChild.nodeValue = st === 'vendido' ? 'Unidad vendida · consultar similares ' : st === 'reservado' ? 'Reservado · consultar lista de espera ' : 'Solicitar información y precio ';
     $('pImg').src = A[T.img];
     $('pImg').alt = 'Planta tipo ' + lv.name + ', ' + T.m2 + ' m²';
     $('pNav').textContent = 'Unidad ' + (LET.indexOf(u.L) + 1) + ' de 4 · ' + lv.sh;
     document.querySelectorAll('.u').forEach(function (el) { el.classList.toggle('on', el.dataset.id === id); });
     stage.classList.add('pnl-open');
     pnl.setAttribute('aria-hidden', 'false');
-    if (ALT.on3d) ALT.on3d(id);
+    if (ALT.on3d && src !== 'refresh') ALT.on3d(id);
     if (src === 'list') {
       var top = stage.getBoundingClientRect().top + window.scrollY - 64;
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
@@ -967,20 +1028,80 @@ body{background:var(--ink)}
   });
   $('reset').addEventListener('click', function () {
     ALT.syncChips(0, 9); ALT.close();
-    document.querySelectorAll('.lgd button').forEach(function (x) { x.classList.remove('on'); });
+    document.querySelectorAll('.lgd [data-tipo]').forEach(function (x) { x.classList.remove('on'); });
     if (ALT.onReset) ALT.onReset();
   });
   var lockT = null;
-  document.querySelectorAll('.lgd button').forEach(function (btn) {
+  document.querySelectorAll('.lgd [data-tipo]').forEach(function (btn) {
     var t = btn.dataset.tipo;
     btn.addEventListener('mouseenter', function () { if (!lockT && ALT.onTipo) ALT.onTipo(t); });
     btn.addEventListener('mouseleave', function () { if (!lockT && ALT.onTipo) ALT.onTipo(null); });
     btn.addEventListener('click', function () {
       lockT = lockT === t ? null : t;
-      document.querySelectorAll('.lgd button').forEach(function (x) { x.classList.toggle('on', x.dataset.tipo === lockT); });
+      document.querySelectorAll('.lgd [data-tipo]').forEach(function (x) { x.classList.toggle('on', x.dataset.tipo === lockT); });
       if (ALT.onTipo) ALT.onTipo(lockT);
     });
   });
+
+  /* ── disponibilidad en vivo (misma base de datos que la app de obra) ── */
+  var ST_TXT = { disponible: 'Disponible', reservado: 'Reservado', vendido: 'Vendido' };
+  var SB = 'https://edsgobmhvsbejrwobkts.supabase.co/rest/v1/';
+  var SBK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkc2dvYm1odnNiZWpyd29ia3RzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MTA5NzIsImV4cCI6MjA5MjA4Njk3Mn0.7wrFTL28rQGTVhT6tjQP6nhZGCefDuZ_Mn5NHLuMHIM';
+  ALT.ST = null; ALT.mode = 'tipo';
+  ALT.stA = function (id) { return (ALT.ST && ALT.ST.a[id]) || 'disponible'; };
+  ALT.stE = function (n) { return (ALT.ST && ALT.ST.e[n]) || 'disponible'; };
+  function setMode(m) {
+    ALT.mode = m;
+    document.querySelectorAll('#lgdSw button').forEach(function (b) { b.classList.toggle('on', b.dataset.m === m); });
+    $('lgdT').hidden = m !== 'tipo'; $('lgdD').hidden = m !== 'disp';
+    if (m === 'disp') {
+      lockT = null; document.querySelectorAll('.lgd [data-tipo]').forEach(function (x) { x.classList.remove('on'); });
+      if (ALT.onTipo) ALT.onTipo(null);
+    }
+    if (ALT.onMode) ALT.onMode(m);
+  }
+  document.querySelectorAll('#lgdSw button').forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.dataset.m); });
+  });
+  function applyST() {
+    var n = { disponible: 0, reservado: 0, vendido: 0 }, ne = { disponible: 0, reservado: 0, vendido: 0 };
+    Object.keys(UNITS).forEach(function (id) { n[ALT.stA(id)]++; });
+    for (var i = 1; i <= 27; i++) ne[ALT.stE(i)]++;
+    $('nAd').textContent = n.disponible; $('nAr').textContent = n.reservado; $('nAv').textContent = n.vendido;
+    $('nEd').textContent = ne.disponible; $('nEr').textContent = ne.reservado + ne.vendido;
+    var d = new Date(ALT.ST.t);
+    $('stT').textContent = 'actualizado ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    document.querySelectorAll('.u').forEach(function (el) {
+      var s = ALT.stA(el.dataset.id);
+      el.dataset.st = s;
+      el.querySelector('.s2').textContent = s === 'disponible' ? '' : ST_TXT[s];
+    });
+    $('uKey').hidden = false;
+    $('uKeyN').textContent = '· ' + n.disponible + ' de 32 disponibles';
+    if (cur) ALT.select(cur.id, 'refresh');
+    if (ALT.onStatus) ALT.onStatus();
+  }
+  function loadST() {
+    var h = { apikey: SBK, Authorization: 'Bearer ' + SBK };
+    var get = function (t, q) {
+      return fetch(SB + t + '?select=' + q, { headers: h, cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+    };
+    Promise.all([get('ventas_apartamentos', 'codigo,estado'), get('ventas_estacionamiento', 'numero,estado')])
+      .then(function (d) {
+        var a = {}, e = {};
+        d[0].forEach(function (r) { if (UNITS[r.codigo]) a[r.codigo] = r.estado; });
+        d[1].forEach(function (r) { e[+r.numero] = r.estado; });
+        var first = !ALT.ST;
+        ALT.ST = { a: a, e: e, t: Date.now() };
+        if (first) { $('lgdSw').hidden = false; setMode('disp'); }
+        applyST();
+      })
+      .catch(function () { /* sin conexión: la maqueta sigue en modo tipologías */ });
+  }
+  loadST();
+  setInterval(function () { if (!document.hidden) loadST(); }, 60000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && ALT.ST && Date.now() - ALT.ST.t > 30000) loadST(); });
 
   /* ── teclado, progreso, revelado ── */
   document.addEventListener('keydown', function (e) {
@@ -1074,6 +1195,14 @@ const HL = {
   sel: M(0xc4933f, { e: 0x3a2508, noReg: true }),
   typ: M(0xead7ae, { noReg: true }),
 };
+// disponibilidad (enlazada con la app de obra)
+const STC = { disponible: 0xb3d3b9, reservado: 0xe7b45f, vendido: 0xc77d72 };
+const DISP = {}, DHOV = {}, DSEL = {};
+for (const k in STC) {
+  DISP[k] = M(STC[k]);
+  DHOV[k] = M(STC[k], { e: 0x2c2c2c, noReg: true });
+  DSEL[k] = M(STC[k], { e: 0x6a6a6a, noReg: true });
+}
 const SITE = {
   board: M(0x8a9db1), lot: M(0xc6cfd9), lot2: M(0xbfc9d4), pave: M(0xa5b2c0),
   white: M(0xeef2f5), dark: M(0x3a4654, { r: 0.6 }), glass: M(0x1e3146, { r: 0.3, m: 0.3 }),
@@ -1206,7 +1335,7 @@ function building(b, org) {
    Referencia ±0.00 = vía principal (cota 992.40)
    Edificio 1 → 995.70 (+3.30) · Parking central → 996.00 (+3.60)
    Edificio 2 y parking posterior → 996.30 (+3.90)                  */
-const Y_E1 = 3.30, Y_PK1 = 3.60, Y_E2 = 3.90;
+const Y_E1 = 3.30, Y_PK1 = 3.60, Y_E2 = 3.90, Y_C = Y_E1 + 3.30;
 const X_E1 = 7.60 + 12.8, X_E2 = 46.76 + 12.8;   // centros según cotas del alzado
 const STALLS = [];
 let stallHL = null;
@@ -1248,6 +1377,12 @@ function stall(parent, num, zone, x0, z0, y, w, aisleTop, acc = false) {
   p.position.set(cx, y + 0.03, cz);
   p.userData = { stall: true, num, zone, pos: new THREE.Vector3(cx, y + 0.04, cz), w, L };
   parent.add(p); STALLS.push(p);
+  const om = new THREE.MeshBasicMaterial({ color: 0x8fd19e, transparent: true, opacity: 0.5, depthWrite: false,
+    polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
+  REG.push({ m: om, op: 0.5, keep: true });
+  const ov = new THREE.Mesh(new THREE.PlaneGeometry(L - 0.25, w - 0.25).rotateX(-Math.PI / 2), om);
+  ov.position.set(cx, y + 0.02, cz); ov.visible = false; ov.renderOrder = 2; p.renderOrder = 3;
+  parent.add(ov); p.userData.ov = ov;
 }
 function aisleLabel(parent, text, xc, zc, y, len) {
   const tex = canvasTex(1600, 200, (ctx, W, Hc) => {
@@ -1258,6 +1393,70 @@ function aisleLabel(parent, text, xc, zc, y, len) {
   });
   const p = groundPlane(len, len / 8, tex, 0.85);
   p.position.set(xc, y + 0.03, zc); parent.add(p);
+}
+
+function facade(parent, map, x, zc, yc, w, h) {
+  // plano vertical hacia la vía (-X): eje horizontal del lienzo → +Z
+  const g = new THREE.PlaneGeometry(w, h); g.rotateY(-Math.PI / 2);
+  const m = new THREE.MeshBasicMaterial({ map, transparent: true, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+  REG.push({ m, op: 1, keep: true });
+  const p = new THREE.Mesh(g, m); p.position.set(x, yc, zc); parent.add(p);
+  return p;
+}
+function warm(ctx, W, Hc, top, bot) {
+  const gr = ctx.createLinearGradient(0, 0, 0, Hc);
+  gr.addColorStop(0, top); gr.addColorStop(1, bot);
+  ctx.fillStyle = gr; ctx.fillRect(0, 0, W, Hc);
+}
+function frame(ctx, W, Hc, cols) {
+  ctx.strokeStyle = '#2b2620'; ctx.lineWidth = 10; ctx.strokeRect(5, 5, W - 10, Hc - 10);
+  ctx.lineWidth = 6; ctx.beginPath();
+  for (let i = 1; i < cols; i++) { const x = (W * i) / cols; ctx.moveTo(x, 0); ctx.lineTo(x, Hc); }
+  ctx.stroke();
+}
+function commercial(parent) {
+  // ventanales del nivel superior: gimnasio y coworking
+  const upper = (name, kind) => canvasTex(820, 300, (ctx, W, Hc) => {
+    warm(ctx, W, Hc, '#f7d9a6', '#c98d4c');
+    ctx.fillStyle = 'rgba(70,44,20,.20)'; ctx.fillRect(0, Hc * 0.80, W, Hc * 0.20);
+    for (let x = 60; x < W; x += 92) {                         // lámparas colgantes
+      ctx.strokeStyle = 'rgba(60,40,20,.55)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 46); ctx.stroke();
+      ctx.fillStyle = '#3a2c1e'; ctx.beginPath(); ctx.arc(x, 52, 11, Math.PI, 0); ctx.fill();
+      ctx.fillStyle = 'rgba(255,236,190,.9)'; ctx.beginPath(); ctx.arc(x, 56, 5, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.fillStyle = 'rgba(58,40,24,.55)';                       // siluetas de mobiliario
+    if (kind === 'gym') {
+      for (let x = 470; x < 780; x += 105) { ctx.fillRect(x, 190, 70, 12); ctx.fillRect(x + 50, 150, 10, 52); }
+      ctx.fillRect(330, 140, 8, 96); ctx.fillRect(312, 150, 44, 6); ctx.fillRect(312, 205, 44, 6);
+    } else {
+      for (let x = 470; x < 780; x += 110) { ctx.fillRect(x, 192, 84, 8); ctx.fillRect(x + 36, 166, 26, 24); ctx.fillRect(x + 8, 200, 6, 40); ctx.fillRect(x + 70, 200, 6, 40); }
+    }
+    ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'middle';
+    ctx.font = '800 78px "Archivo", "Arial Narrow", sans-serif';
+    ctx.shadowColor = 'rgba(60,30,0,.45)'; ctx.shadowBlur = 8;
+    ctx.fillText(name, 40, 150); ctx.shadowBlur = 0;
+    frame(ctx, W, Hc, 3);
+  });
+  // locales comerciales a nivel de vía
+  const shop = (n) => canvasTex(720, 330, (ctx, W, Hc) => {
+    const band = 58;
+    ctx.fillStyle = '#23272c'; ctx.fillRect(0, 0, W, band);
+    ctx.fillStyle = '#f2ece2'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '600 34px "JetBrains Mono", ui-monospace, monospace';
+    ctx.fillText('LOCAL COMERCIAL ' + n, W / 2, band / 2 + 2);
+    ctx.save(); ctx.translate(0, band + 8);
+    warm(ctx, W, Hc - band - 8, '#f4cf95', '#b97c3f');
+    ctx.fillStyle = 'rgba(80,52,28,.35)'; ctx.fillRect(40, 170, W - 80, 16);
+    for (let x = 90; x < W - 40; x += 120) { ctx.fillRect(x, 190, 8, 60); ctx.beginPath(); ctx.arc(x + 4, 186, 20, Math.PI, 0); ctx.fill(); }
+    for (let x = 80; x < W; x += 140) { ctx.fillStyle = 'rgba(255,240,205,.95)'; ctx.beginPath(); ctx.arc(x, 26, 9, 0, Math.PI * 2); ctx.fill(); }
+    frame(ctx, W, Hc - band - 8, 2);
+    ctx.restore();
+  });
+  facade(parent, upper('GYMBOX', 'gym'), 0.27, -5.95, Y_E1 + 1.62, 5.9, 2.15);
+  facade(parent, upper('COWORKING', 'cw'), 0.27, 0.6, Y_E1 + 1.62, 5.9, 2.15);
+  facade(parent, shop('01'), 0.27, -5.95, 1.58, 6.1, 2.8);
+  facade(parent, shop('02'), 0.27, 0.6, 1.58, 6.1, 2.8);
 }
 
 function site() {
@@ -1292,20 +1491,24 @@ function site() {
   add(bk, 'white', box(19, 46.5, 0, Y_PK1 + 1.2, 14.5, 14.7));
   add(bk, 'white', box(46.5, 76, Y_E2, Y_E2 + 1.4, 31.5, 31.7));
   add(bk, 'white', box(46.3, 46.5, 0, Y_E2 + 1.4, 14.7, 31.7));
-  // bloque de acceso y área comercial, con pérgola
+  // bloque comercial: 2 locales a nivel de vía; gimnasio y coworking encima
   add(bk, 'white', box(0.3, 7.3, 0, Y_E1, -9.5, 4.5));
-  add(bk, 'glass', box(0.27, 0.32, 0.4, 2.7, -9.0, 4.0), false);
-  add(bk, 'white', box(0.3, 0.45, Y_E1, Y_E1 + 1.05, -9.5, 4.5));
+  add(bk, 'white', box(0.3, 7.3, Y_E1, Y_C, -9.5, 4.5));
+  add(bk, 'white', box(-0.05, 7.3, Y_E1 - 0.28, Y_E1 + 0.02, -9.65, 4.65));      // losa en vuelo
+  add(bk, 'white', box(0.1, 7.45, Y_C, Y_C + 0.35, -9.65, 4.65));                // cornisa
+  add(bk, 'lot', box(0.4, 7.2, Y_C, Y_C + 0.38, -9.4, 4.4), false);
+  add(bk, 'white', box(0.26, 0.3, 0, Y_E1 - 0.28, -2.75, -2.45), false);       // pilar entre locales
+  add(bk, 'white', box(0.26, 0.3, Y_E1 + 0.02, Y_C, -2.85, -2.35), false);     // pilar entre ventanales
+  for (let z = 3.85; z <= 4.46; z += 0.12)                                      // celosía de madera
+    add(bk, 'wood', box(0.1, 0.3, Y_E1 + 0.02, Y_C, z - 0.035, z + 0.035), false);
+  for (let x = 0.55; x <= 7.1; x += 0.16)
+    add(bk, 'wood', box(x - 0.04, x + 0.04, Y_E1 + 0.02, Y_C, 4.5, 4.62), false);
+  // pérgola sobre la escalera de acceso
   for (const [px, pz] of [[0.35, 4.75], [0.35, 14.25], [3.85, 4.75], [3.85, 14.25]])
     add(bk, 'wood', box(px - 0.12, px + 0.12, 0, 3.4, pz - 0.12, pz + 0.12), false);
   add(bk, 'wood', box(0.2, 4.0, 3.4, 3.55, 4.6, 4.9), false);
   add(bk, 'wood', box(0.2, 4.0, 3.4, 3.55, 14.1, 14.4), false);
   for (let x = 0.35; x <= 3.9; x += 0.38) add(bk, 'wood', box(x - 0.06, x + 0.06, 3.55, 3.8, 4.5, 14.5), false);
-  for (const [px, pz] of [[0.6, -9.2], [0.6, -2.4], [0.6, 4.2], [7.0, -9.2], [7.0, -2.4], [7.0, 4.2]])
-    add(bk, 'wood', box(px - 0.1, px + 0.1, Y_E1, 5.95, pz - 0.1, pz + 0.1), false);
-  add(bk, 'wood', box(0.4, 7.2, 5.95, 6.1, -9.4, -9.0), false);
-  add(bk, 'wood', box(0.4, 7.2, 5.95, 6.1, 4.0, 4.4), false);
-  for (let x = 0.6; x <= 7.05; x += 0.4) add(bk, 'wood', box(x - 0.06, x + 0.06, 6.1, 6.32, -9.5, 4.5), false);
   // árboles del jardín posterior
   for (const [x, y, z] of [[70, Y_E2, 16], [73, Y_E2, 27.5], [69, Y_E2, 24], [74.6, Y_E2, -7.6], [73.4, Y_E2, 12]]) {
     const t = new THREE.CylinderGeometry(0.12, 0.16, 2.4, 6); t.translate(x, y + 1.2, z);
@@ -1313,6 +1516,7 @@ function site() {
     add(bk, 'tree', t, false); add(bk, 'tree', c, false);
   }
   flush(bk, SITE, g);
+  commercial(g);
 
   // parking central (Parking Edificio 1): 22–27 junto al E1, 16–21 junto al E2
   const z0 = -7.0;
@@ -1391,7 +1595,10 @@ function flyTo(t, p, dur = 1.1) {
 const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
 
 /* ── estado e interacción ─────────────────────────────── */
-const S = { sel: null, hov: null, typ: null, b: 0, l: 9, ready: false };
+const S = { sel: null, hov: null, typ: null, b: 0, l: 9, ready: false, mode: 'tipo' };
+const stA = (id) => (ALT.stA ? ALT.stA(id) : 'disponible');
+const stE = (n) => (ALT.stE ? ALT.stE(n) : 'disponible');
+const ST_TXT = { disponible: 'Disponible', reservado: 'Reservado', vendido: 'Vendido' };
 function visibleShell(s) {
   const u = s.userData;
   return (!S.b || S.b === u.b) && (S.l === 9 || u.l <= S.l);
@@ -1400,11 +1607,18 @@ function paint() {
   for (const s of SHELLS) {
     const u = s.userData;
     let m = u.base;
+    const d = S.mode === 'disp' ? stA(u.id) : null;
     if (S.b && S.b !== u.b) m = u.base;
+    else if (d) m = S.sel === u.id ? DSEL[d] : S.hov === u.id ? DHOV[d] : DISP[d];
     else if (S.sel === u.id) m = HL.sel;
     else if (S.hov === u.id) m = HL.hov;
     else if (S.typ && S.typ === u.tipo) m = HL.typ;
     s.material = m;
+  }
+  for (const p of STALLS) {
+    const ov = p.userData.ov;
+    ov.visible = S.mode === 'disp';
+    if (ov.visible) ov.material.color.setHex(STC[stE(+p.userData.num)] || STC.disponible);
   }
 }
 function setFade(b, on) {
@@ -1456,6 +1670,9 @@ ALT.on3d = (id) => {
   controls.autoRotate = false;
 };
 ALT.onTipo = (t) => { S.typ = t; paint(); };
+ALT.onMode = (m) => { S.mode = m; paint(); };
+ALT.onStatus = () => paint();
+if (ALT.mode) { S.mode = ALT.mode; paint(); }
 ALT.onFilter = (b, l) => {
   if (b !== undefined) S.b = b;
   if (l !== undefined) S.l = l;
@@ -1507,11 +1724,11 @@ function hover() {
     const r = stage.getBoundingClientRect();
     if (st) {
       tip.querySelector('b').textContent = `Puesto ${st.num}`;
-      tip.querySelector('span').textContent = st.zone;
+      tip.querySelector('span').textContent = st.zone + (ALT.ST ? ' · ' + ST_TXT[stE(+st.num)] : '');
     } else {
       const T = ALT.TIPO[u.tipo];
       tip.querySelector('b').textContent = `Edificio ${u.b} · ${ALT.LV[u.l].name} · Apto ${u.L}`;
-      tip.querySelector('span').textContent = `${T.m2} m² · ${T.terrCorto}`;
+      tip.querySelector('span').textContent = `${T.m2} m² · ${T.terrCorto}` + (ALT.ST ? ' · ' + ST_TXT[stA(u.id)] : '');
     }
     tip.style.left = (lastEvt.clientX - r.left) + 'px';
     tip.style.top = (lastEvt.clientY - r.top) + 'px';
@@ -1528,7 +1745,8 @@ controls.addEventListener('end', () => {
 
 /* ── rótulos y desplazamiento de vista por el panel ───── */
 const lbls = [[document.getElementById('bl1'), new THREE.Vector3(X_E1, Y_E1 + 15.4, 0)],
-              [document.getElementById('bl2'), new THREE.Vector3(X_E2, Y_E2 + 15.4, 0)]];
+              [document.getElementById('bl2'), new THREE.Vector3(X_E2, Y_E2 + 15.4, 0)],
+              [document.getElementById('bl3'), new THREE.Vector3(3.8, Y_C + 3.2, -2.6)]];
 const tmp = new THREE.Vector3();
 function labels(w, h) {
   for (const [el, p] of lbls) {
@@ -1614,6 +1832,7 @@ renderer.setAnimationLoop(() => {
   controls.target.y = THREE.MathUtils.clamp(controls.target.y, -1, 20);
   controls.update();
   if (needPick) hover();
+  if (S.sel && S.mode === 'disp') { const k = 0.55 + 0.45 * Math.sin(now / 260); for (const q in DSEL) DSEL[q].emissiveIntensity = k; }
   viewOffset(W, Hh);
   renderer.render(scene, camera);
   labels(W, Hh);
