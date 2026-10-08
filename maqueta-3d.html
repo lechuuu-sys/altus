@@ -682,7 +682,7 @@ body{background:var(--ink)}
   <div class="ovl-tb">
     <div class="code">LÁM. 09 · Maqueta interactiva</div>
     <h1>Elige tu <em>apartamento</em></h1>
-    <p>Arrastra para girar · rueda o pellizco para acercar · toca una unidad</p>
+    <p>Arrastra para girar · rueda o pellizco para acercar · toca una unidad o un puesto</p>
   </div>
 
   <div class="lgd" id="lgd">
@@ -698,6 +698,7 @@ body{background:var(--ink)}
       <button class="chip on" data-b="0">Conjunto</button>
       <button class="chip" data-b="1">Edif. 1</button>
       <button class="chip" data-b="2">Edif. 2</button>
+      <button class="chip" id="pkChip">Parking</button>
     </div>
     <div class="ctl-row" role="group" aria-label="Nivel">
       <span class="ctl-lbl">Nivel</span>
@@ -743,7 +744,7 @@ body{background:var(--ink)}
     <div class="titleblock rv"><span class="code">LÁM. 10</span><span class="name">Cuadro de unidades</span><span class="scale">32 APARTAMENTOS · 2 EDIFICIOS</span></div>
     <div class="svc-head">
       <h2 class="h-display h2 rv">Cada edificio,<br>nivel por <em>nivel</em></h2>
-      <p class="lede rv">Selecciona cualquier unidad para verla en la maqueta y abrir su planta. Los apartamentos A y B dan a un extremo del edificio; C y D, al opuesto.</p>
+      <p class="lede rv">Selecciona cualquier unidad para verla en la maqueta y abrir su planta. Los apartamentos A y B miran hacia el fondo del conjunto; C y D, hacia la vía principal.</p>
     </div>
     <div class="bldgs" id="bldgs"></div>
   </div>
@@ -756,7 +757,7 @@ body{background:var(--ink)}
       <svg viewBox="0 0 100 87" style="stroke:var(--graphite-dim)"><polygon points="50,4 96,83 4,83"/><polygon points="50,26 77,72 23,72"/></svg>
       <span><span class="brand-txt" style="color:var(--graphite);font-size:13px">Altus</span><span class="brand-sub">INGENIERÍA</span></span>
     </a>
-    <span class="tag">Maqueta esquemática a partir del plano A-1 · emplazamiento aproximado</span>
+    <span class="tag">Maqueta esquemática según planos A-1 y A-5</span>
   </div>
 </footer>
 
@@ -799,6 +800,8 @@ body{background:var(--ink)}
     { n: 3, name: 'Piso 3', sh: 'P3', cota: 'N +8.40', t: 'P3' }
   ];
   var LET = ['A', 'B', 'C', 'D'];
+  var COTA = { 1: 995.70, 2: 996.30 };
+  function cota(u) { return (COTA[u.b] + u.l * 2.80).toFixed(2).replace('.', ','); }
   var UNITS = {};
   [1, 2].forEach(function (b) {
     LV.forEach(function (lv) {
@@ -847,6 +850,7 @@ body{background:var(--ink)}
       '<div><dt>Programa</dt><dd>2 habitaciones · 2 baños</dd></div>' +
       '<div><dt>Terrazas</dt><dd>' + T.terr + '</dd></div>' +
       '<div><dt>Nivel</dt><dd>' + lv.name + ' · ' + lv.cota + '</dd></div>' +
+      '<div><dt>Cota de piso</dt><dd>' + cota(u) + ' m</dd></div>' +
       '<div><dt>Precio</dt><dd>Consultar</dd></div>';
     $('pImg').src = A[T.img];
     $('pImg').alt = 'Planta tipo ' + lv.name + ', ' + T.m2 + ' m²';
@@ -936,21 +940,30 @@ body{background:var(--ink)}
 
   /* ── controles de la maqueta ── */
   var chipsB = document.querySelectorAll('[data-b]'), chipsL = document.querySelectorAll('[data-l]');
+  var pk = $('pkChip');
   ALT.syncChips = function (b, l) {
+    pk.classList.remove('on');
     chipsB.forEach(function (c) { c.classList.toggle('on', +c.dataset.b === b); });
     chipsL.forEach(function (c) { c.classList.toggle('on', +c.dataset.l === l); });
   };
   chipsB.forEach(function (c) {
     c.addEventListener('click', function () {
-      chipsB.forEach(function (x) { x.classList.toggle('on', x === c); });
+      chipsB.forEach(function (x) { x.classList.toggle('on', x === c); }); pk.classList.remove('on');
       if (ALT.onFilter) ALT.onFilter(+c.dataset.b, undefined);
     });
   });
   chipsL.forEach(function (c) {
     c.addEventListener('click', function () {
       chipsL.forEach(function (x) { x.classList.toggle('on', x === c); });
+      if (pk.classList.contains('on')) { pk.classList.remove('on'); chipsB[0].classList.add('on'); }
       if (ALT.onFilter) ALT.onFilter(undefined, +c.dataset.l);
     });
+  });
+  pk.addEventListener('click', function () {
+    chipsB.forEach(function (x) { x.classList.remove('on'); });
+    chipsL.forEach(function (x) { x.classList.toggle('on', x.dataset.l === '9'); });
+    pk.classList.add('on'); ALT.close();
+    if (ALT.onPark) ALT.onPark();
   });
   $('reset').addEventListener('click', function () {
     ALT.syncChips(0, 9); ALT.close();
@@ -1189,42 +1202,139 @@ function building(b, org) {
   BLD[b] = { root, levels, roof, ms, center: org.clone().add(new THREE.Vector3(0, 6.2, 0)) };
 }
 
-/* ── emplazamiento (aproximado) ───────────────────────── */
+/* ── implantación según plano A-5 y alzado general ─────
+   Referencia ±0.00 = vía principal (cota 992.40)
+   Edificio 1 → 995.70 (+3.30) · Parking central → 996.00 (+3.60)
+   Edificio 2 y parking posterior → 996.30 (+3.90)                  */
+const Y_E1 = 3.30, Y_PK1 = 3.60, Y_E2 = 3.90;
+const X_E1 = 7.60 + 12.8, X_E2 = 46.76 + 12.8;   // centros según cotas del alzado
+const STALLS = [];
+let stallHL = null;
+
+function canvasTex(w, h, draw) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  draw(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return t;
+}
+function groundPlane(wz, lx, map, op = 1) {
+  // plano horizontal: eje vertical del lienzo → +X (fondo), eje horizontal → +Z
+  const g = new THREE.PlaneGeometry(wz, lx);
+  g.rotateX(-Math.PI / 2); g.rotateY(-Math.PI / 2);
+  const m = new THREE.MeshBasicMaterial({ map, transparent: true, depthWrite: false,
+    polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+  REG.push({ m, op, keep: true });
+  return new THREE.Mesh(g, m);
+}
+function stall(parent, num, zone, x0, z0, y, w, aisleTop, acc = false) {
+  const L = 5.0, pxW = Math.round(128 * w / 2.5);
+  const tex = canvasTex(pxW, 256, (ctx, W, Hc) => {
+    if (acc) { ctx.fillStyle = 'rgba(120,165,215,.28)'; ctx.fillRect(0, 0, W, Hc); }
+    ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(3, 0); ctx.lineTo(3, Hc); ctx.moveTo(W - 3, 0); ctx.lineTo(W - 3, Hc);
+    const far = aisleTop ? Hc - 3 : 3; ctx.moveTo(0, far); ctx.lineTo(W, far);
+    ctx.stroke();
+    ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '700 66px "JetBrains Mono", ui-monospace, monospace';
+    const ty = aisleTop ? 52 : Hc - 52;
+    ctx.fillText(num, W / 2, ty);
+    if (acc) { ctx.font = '48px sans-serif'; ctx.fillText('♿', W / 2, aisleTop ? ty + 66 : ty - 66); }
+  });
+  const p = groundPlane(w, L, tex);
+  const cx = x0 + L / 2, cz = z0 + w / 2;
+  p.position.set(cx, y + 0.03, cz);
+  p.userData = { stall: true, num, zone, pos: new THREE.Vector3(cx, y + 0.04, cz), w, L };
+  parent.add(p); STALLS.push(p);
+}
+function aisleLabel(parent, text, xc, zc, y, len) {
+  const tex = canvasTex(1600, 200, (ctx, W, Hc) => {
+    ctx.fillStyle = 'rgba(255,255,255,.88)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '600 92px "JetBrains Mono", ui-monospace, monospace';
+    ctx.letterSpacing = '18px';
+    ctx.fillText(text, W / 2, Hc / 2);
+  });
+  const p = groundPlane(len, len / 8, tex, 0.85);
+  p.position.set(xc, y + 0.03, zc); parent.add(p);
+}
+
 function site() {
   const g = new THREE.Group(); scene.add(g);
   const bk = bucket();
-  add(bk, 'board', box(-34, 80, -1.0, 0, -21, 21));
-  add(bk, 'lot', box(-28, 16, 0, 0.05, -15, 16));
-  add(bk, 'lot2', box(16, 74, 0, 1.4, -16, 14));
-  add(bk, 'pave', box(18, 30, 1.4, 1.43, -14, 12), false);
-  add(bk, 'pave', box(30, 58, 1.4, 1.43, 5, 12.5), false);
-  add(bk, 'pave', box(58, 72, 1.4, 1.43, -14, 12), false);
-  for (let x = 30; x <= 57.6; x += 2.5) add(bk, 'white', box(x - 0.05, x + 0.05, 1.43, 1.45, 6.6, 11.6), false);
-  for (let z = -13; z <= 10.6; z += 2.5) add(bk, 'white', box(64, 69, 1.43, 1.45, z - 0.05, z + 0.05), false);
-  for (let x = 18.5; x <= 29.6; x += 2.5) add(bk, 'white', box(x - 0.05, x + 0.05, 1.43, 1.45, -13.5, -8.5), false);
-  // rampa
-  const r = new THREE.BoxGeometry(30.4, 0.3, 4);
-  r.rotateZ(Math.atan2(1.4, 30)); r.translate(1, 0.6, 10.6);
+  // tablero y vía principal
+  add(bk, 'board', box(-16, 86, -1.0, 0, -20, 40));
+  add(bk, 'dark', box(-11, -2, 0, 0.02, -20, 40), false);
+  for (let z = -18; z < 40; z += 6) add(bk, 'white', box(-6.6, -6.4, 0.02, 0.03, z, z + 3), false);
+  add(bk, 'lot', box(-2, 0, 0, 0.15, -20, 40));
+  // plataformas (cotas de terraza)
+  add(bk, 'lot', box(7.3, 33.2, 0, Y_E1, -9.5, 8.5));                  // edificio 1
+  add(bk, 'pave', box(19, 33.2, 0, Y_E1, 8.5, 14.5));                   // vía interna junto al E1
+  add(bk, 'pave', box(33.2, 46.5, 0, Y_PK1, -9.5, 14.5));               // parking central
+  add(bk, 'lot2', box(46.5, 76, 0, Y_E2, -9.5, 8.5));                   // edificio 2
+  add(bk, 'pave', box(46.5, 66, 0, Y_E2, 8.5, 31.5));                   // parking posterior
+  add(bk, 'lot2', box(66, 76, 0, Y_E2, 8.5, 31.5));                     // jardín
+  add(bk, 'green', box(66.2, 75.8, Y_E2, Y_E2 + 0.05, 8.7, 31.3), false);
+  add(bk, 'green', box(7.5, 75.8, Y_E1, Y_E1 + 0.06, -9.5, -8.3), false);
+  // rampa vehicular desde la vía (0 → +3.30)
+  const rl = Math.hypot(19, Y_E1);
+  const r = new THREE.BoxGeometry(rl, 0.3, 6);
+  r.rotateZ(Math.atan2(Y_E1, 19)); r.translate(9.5, Y_E1 / 2 - 0.15, 11.5);
   add(bk, 'pave', r);
-  // muros perimetrales
-  add(bk, 'white', box(16, 74, 1.4, 3.3, -16, -15.75));
-  add(bk, 'white', box(73.75, 74, 1.4, 3.3, -16, 14));
-  add(bk, 'white', box(-28, 16, 0.05, 2.1, -15, -14.75));
-  // edificio comercial en el frente de calle
-  add(bk, 'white', box(-25, -15, 0.05, 6.2, 3, 13));
-  add(bk, 'glass', box(-24.4, -15.6, 0.4, 2.7, 12.98, 13.05), false);
-  add(bk, 'glass', box(-24.4, -15.6, 3.5, 5.3, 12.98, 13.05), false);
-  for (let x = -14.6; x <= -9.8; x += 0.5) add(bk, 'wood', box(x - 0.06, x + 0.06, 3.0, 3.25, 7.5, 13), false);
-  add(bk, 'wood', box(-10.1, -9.9, 0.05, 3.0, 7.6, 7.8), false);
-  add(bk, 'wood', box(-10.1, -9.9, 0.05, 3.0, 12.7, 12.9), false);
-  // árboles de maqueta
-  const trees = [[-29, 0, -12], [-31, 0, 12], [-20, 0, -13], [71, 1.4, 10], [71, 1.4, -12], [68, 1.4, -14.2]];
-  for (const [x, y, z] of trees) {
+  add(bk, 'white', box(0, 19, 0, Y_E1 + 1.0, 14.5, 14.7));
+  // escalera peatonal bajo la pérgola
+  const steps = 11, rise = Y_E1 / steps, run = 7.3 / steps;
+  for (let i = 0; i < steps; i++) add(bk, 'white', box(i * run, 7.3, 0, (i + 1) * rise, 4.6, 8.4), i % 3 === 0);
+  // muros de lindero
+  add(bk, 'white', box(7.3, 76, Y_E1, Y_E2 + 1.6, -9.7, -9.5));
+  add(bk, 'white', box(76, 76.2, Y_E2, Y_E2 + 1.8, -9.7, 31.7));
+  add(bk, 'white', box(19, 46.5, 0, Y_PK1 + 1.2, 14.5, 14.7));
+  add(bk, 'white', box(46.5, 76, Y_E2, Y_E2 + 1.4, 31.5, 31.7));
+  add(bk, 'white', box(46.3, 46.5, 0, Y_E2 + 1.4, 14.7, 31.7));
+  // bloque de acceso y área comercial, con pérgola
+  add(bk, 'white', box(0.3, 7.3, 0, Y_E1, -9.5, 4.5));
+  add(bk, 'glass', box(0.27, 0.32, 0.4, 2.7, -9.0, 4.0), false);
+  add(bk, 'white', box(0.3, 0.45, Y_E1, Y_E1 + 1.05, -9.5, 4.5));
+  for (const [px, pz] of [[0.35, 4.75], [0.35, 14.25], [3.85, 4.75], [3.85, 14.25]])
+    add(bk, 'wood', box(px - 0.12, px + 0.12, 0, 3.4, pz - 0.12, pz + 0.12), false);
+  add(bk, 'wood', box(0.2, 4.0, 3.4, 3.55, 4.6, 4.9), false);
+  add(bk, 'wood', box(0.2, 4.0, 3.4, 3.55, 14.1, 14.4), false);
+  for (let x = 0.35; x <= 3.9; x += 0.38) add(bk, 'wood', box(x - 0.06, x + 0.06, 3.55, 3.8, 4.5, 14.5), false);
+  for (const [px, pz] of [[0.6, -9.2], [0.6, -2.4], [0.6, 4.2], [7.0, -9.2], [7.0, -2.4], [7.0, 4.2]])
+    add(bk, 'wood', box(px - 0.1, px + 0.1, Y_E1, 5.95, pz - 0.1, pz + 0.1), false);
+  add(bk, 'wood', box(0.4, 7.2, 5.95, 6.1, -9.4, -9.0), false);
+  add(bk, 'wood', box(0.4, 7.2, 5.95, 6.1, 4.0, 4.4), false);
+  for (let x = 0.6; x <= 7.05; x += 0.4) add(bk, 'wood', box(x - 0.06, x + 0.06, 6.1, 6.32, -9.5, 4.5), false);
+  // árboles del jardín posterior
+  for (const [x, y, z] of [[70, Y_E2, 16], [73, Y_E2, 27.5], [69, Y_E2, 24], [74.6, Y_E2, -7.6], [73.4, Y_E2, 12]]) {
     const t = new THREE.CylinderGeometry(0.12, 0.16, 2.4, 6); t.translate(x, y + 1.2, z);
     const c = new THREE.IcosahedronGeometry(1.9, 1); c.translate(x, y + 3.5, z);
     add(bk, 'tree', t, false); add(bk, 'tree', c, false);
   }
   flush(bk, SITE, g);
+
+  // parking central (Parking Edificio 1): 22–27 junto al E1, 16–21 junto al E2
+  const z0 = -7.0;
+  for (let i = 0; i < 6; i++) {
+    stall(g, String(22 + i), 'Parking Edificio 1', 33.4, z0 + 2.5 * i, Y_PK1, 2.5, true);
+    stall(g, String(16 + i), 'Parking Edificio 1', 41.4, z0 + 2.5 * i, Y_PK1, 2.5, false);
+  }
+  aisleLabel(g, 'PARKING EDIFICIO 1', 39.9, 0.5, Y_PK1, 14);
+  // parking posterior (Parking Edificio 2): 15→08 en fila delantera, 01→07 al fondo
+  for (let i = 0; i < 8; i++)
+    stall(g, String(15 - i).padStart(2, '0'), 'Parking Edificio 2', 47.2, 11 + 2.5 * i, Y_E2, 2.5, true);
+  for (let i = 0; i < 6; i++)
+    stall(g, String(i + 1).padStart(2, '0'), 'Parking Edificio 2', 59.8, 11 + 2.5 * i, Y_E2, 2.5, false);
+  stall(g, '07', 'Parking Edificio 2 · accesible', 59.8, 26.5, Y_E2, 4.0, false, true);
+  aisleLabel(g, 'PARKING EDIFICIO 2', 56.0, 21, Y_E2, 16);
+
+  // resaltado de puesto
+  const hg = new THREE.PlaneGeometry(1, 1); hg.rotateX(-Math.PI / 2);
+  stallHL = new THREE.Mesh(hg, new THREE.MeshBasicMaterial({ color: 0xe8c87a, transparent: true, opacity: 0.45,
+    depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 }));
+  stallHL.visible = false; scene.add(stallHL);
+
   // mesa de dibujo: retícula y sombra
   const grid = new THREE.GridHelper(640, 80, 0x3d6a91, 0x22405e);
   grid.position.y = -1.02; grid.material.transparent = true; grid.material.opacity = 0.35;
@@ -1234,18 +1344,18 @@ function site() {
   return sh;
 }
 
-building(1, new THREE.Vector3(0, 0, 0));
-building(2, new THREE.Vector3(44, 1.4, -4));
+building(1, new THREE.Vector3(X_E1, Y_E1, 0));
+building(2, new THREE.Vector3(X_E2, Y_E2, 0));
 const shadowCatcher = site();
 
 /* ── luces ────────────────────────────────────────────── */
 scene.add(new THREE.HemisphereLight(0xe8f0fa, 0x24384c, 1.6));
 const sun = new THREE.DirectionalLight(0xfff3e2, 2.9);
-sun.position.set(-48, 95, 62);
-sun.target.position.set(22, 0, -2);
+sun.position.set(-34, 95, 70);
+sun.target.position.set(36, 0, 8);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -72, right: 72, top: 52, bottom: -52, near: 20, far: 260 });
+Object.assign(sun.shadow.camera, { left: -62, right: 62, top: 56, bottom: -56, near: 20, far: 260 });
 sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.04;
 scene.add(sun, sun.target);
 const fill = new THREE.DirectionalLight(0xc5d8ee, 0.7);
@@ -1260,7 +1370,8 @@ controls.minPolarAngle = 0.12; controls.maxPolarAngle = 1.36;
 controls.screenSpacePanning = true;
 controls.autoRotateSpeed = 0.35;
 
-const HOME_T = new THREE.Vector3(22, 3, -1);
+const HOME_T = new THREE.Vector3(35, 4.5, 8);
+const PARK_T = new THREE.Vector3(49, 3.8, 11);
 const sph = (r, phi, th) => new THREE.Vector3().setFromSpherical(new THREE.Spherical(r, phi, th));
 function fitDist(R) {
   const v = THREE.MathUtils.degToRad(camera.fov) / 2;
@@ -1274,7 +1385,7 @@ function homePose() {
 
 let tw = null;
 function flyTo(t, p, dur = 1.1) {
-  tip.classList.remove('on'); if (S.hov) { S.hov = null; paint(); }
+  tip.classList.remove('on'); if (stallHL) stallHL.visible = false; if (S.hov) { S.hov = null; paint(); }
   tw = { t0: performance.now(), dur: REDUCE ? 1 : dur * 1000, ft: controls.target.clone(), fp: camera.position.clone(), tt: t, tp: p };
 }
 const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
@@ -1324,7 +1435,7 @@ function focusView() {
     const phi = S.l !== 9 ? 0.72 : 1.0;
     flyTo(t, t.clone().add(sph(Math.min(fitDist(19), 120), phi, -0.62 + (S.b === 2 ? 0.15 : 0))));
   } else if (S.l !== 9) {
-    const t = HOME_T.clone(); t.y = S.l * H + 1;
+    const t = HOME_T.clone(); t.y = Y_E1 + S.l * H + 1;
     flyTo(t, t.clone().add(sph(Math.min(fitDist(camera.aspect < 1 ? 46 : 38), 300), 0.7, -0.62)));
   } else {
     const h = homePose(); flyTo(h.t, h.p);
@@ -1351,6 +1462,11 @@ ALT.onFilter = (b, l) => {
   applyFilters(); focusView();
   controls.autoRotate = false;
 };
+ALT.onPark = () => {
+  S.b = 0; S.l = 9; applyFilters();
+  flyTo(PARK_T, PARK_T.clone().add(sph(Math.min(fitDist(camera.aspect < 1 ? 25 : 19), 170), 0.5, -0.32)), 1.3);
+  controls.autoRotate = false;
+};
 ALT.onReset = () => { S.b = 0; S.l = 9; S.typ = null; applyFilters(); const h = homePose(); flyTo(h.t, h.p); };
 
 // raycasting
@@ -1361,11 +1477,12 @@ function pick() {
   ptr.set(((lastEvt.clientX - r.left) / r.width) * 2 - 1, -((lastEvt.clientY - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(ptr, camera);
   const occ = OCC.filter((o) => (!S.b || S.b === o.userData.occB) && o.parent.visible);
-  const hit = ray.intersectObjects(SHELLS.filter(visibleShell).concat(occ), false)[0];
-  return hit && hit.object.userData.id ? hit.object.userData : null;
+  const hit = ray.intersectObjects(SHELLS.filter(visibleShell).concat(occ, STALLS), false)[0];
+  const ud = hit && hit.object.userData;
+  return ud && (ud.id || ud.stall) ? ud : null;
 }
 cv.addEventListener('pointermove', (e) => { lastEvt = e; needPick = e.pointerType === 'mouse'; });
-cv.addEventListener('pointerleave', () => { if (S.hov) { S.hov = null; paint(); } tip.classList.remove('on'); cv.classList.remove('is-hover'); });
+cv.addEventListener('pointerleave', () => { stallHL.visible = false; if (S.hov) { S.hov = null; paint(); } tip.classList.remove('on'); cv.classList.remove('is-hover'); });
 cv.addEventListener('pointerdown', (e) => { downAt = { x: e.clientX, y: e.clientY }; });
 cv.addEventListener('pointerup', (e) => {
   if (!downAt || !S.ready) return;
@@ -1374,19 +1491,28 @@ cv.addEventListener('pointerup', (e) => {
   if (moved > 6) return;
   lastEvt = e;
   const u = pick();
-  if (u) ALT.select(u.id, '3d'); else if (S.sel) ALT.close();
+  if (u && u.id) ALT.select(u.id, '3d'); else if (!u && S.sel) ALT.close();
 });
 function hover() {
   needPick = false;
   if (!S.ready || !lastEvt) return;
   const u = pick();
-  const id = u ? u.id : null;
+  const id = u && u.id ? u.id : null;
   if (id !== S.hov) { S.hov = id; paint(); }
-  cv.classList.toggle('is-hover', !!u);
+  const st = u && u.stall ? u : null;
+  stallHL.visible = !!st;
+  if (st) { stallHL.position.copy(st.pos); stallHL.scale.set(st.L, 1, st.w); }
+  cv.classList.toggle('is-hover', !!id);
   if (u) {
-    const T = ALT.TIPO[u.tipo], r = stage.getBoundingClientRect();
-    tip.querySelector('b').textContent = `Edificio ${u.b} · ${ALT.LV[u.l].name} · Apto ${u.L}`;
-    tip.querySelector('span').textContent = `${T.m2} m² · ${T.terrCorto}`;
+    const r = stage.getBoundingClientRect();
+    if (st) {
+      tip.querySelector('b').textContent = `Puesto ${st.num}`;
+      tip.querySelector('span').textContent = st.zone;
+    } else {
+      const T = ALT.TIPO[u.tipo];
+      tip.querySelector('b').textContent = `Edificio ${u.b} · ${ALT.LV[u.l].name} · Apto ${u.L}`;
+      tip.querySelector('span').textContent = `${T.m2} m² · ${T.terrCorto}`;
+    }
     tip.style.left = (lastEvt.clientX - r.left) + 'px';
     tip.style.top = (lastEvt.clientY - r.top) + 'px';
     tip.classList.add('on');
@@ -1401,8 +1527,8 @@ controls.addEventListener('end', () => {
 });
 
 /* ── rótulos y desplazamiento de vista por el panel ───── */
-const lbls = [[document.getElementById('bl1'), new THREE.Vector3(0, 15.4, 0)],
-              [document.getElementById('bl2'), new THREE.Vector3(44, 16.8, -4)]];
+const lbls = [[document.getElementById('bl1'), new THREE.Vector3(X_E1, Y_E1 + 15.4, 0)],
+              [document.getElementById('bl2'), new THREE.Vector3(X_E2, Y_E2 + 15.4, 0)]];
 const tmp = new THREE.Vector3();
 function labels(w, h) {
   for (const [el, p] of lbls) {
@@ -1448,7 +1574,7 @@ function reveal(t) {
     if (r.line) {
       r.m.opacity = r.op * (0.25 + 0.75 * lin) * (1 + (1 - col) * 0.8);
       r.m.color.copy(CYAN).lerp(INK, col);
-    } else { r.m.transparent = sol < 1; r.m.opacity = sol; }
+    } else if (r.keep) { r.m.opacity = r.op * sol; } else { r.m.transparent = sol < 1; r.m.opacity = sol; }
   }
   sun.intensity = SUN_I * sol;
   shadowCatcher.material.opacity = 0.28 * sol;
@@ -1460,6 +1586,7 @@ function finish() {
   if (done) return; done = true;
   for (const r of REG) {
     if (r.line) { r.m.opacity = r.op; r.m.color.copy(INK); }
+    else if (r.keep) { r.m.opacity = r.op; continue; }
     else { r.m.transparent = false; r.m.opacity = 1; }
     r.m.needsUpdate = true;
   }
@@ -1482,9 +1609,9 @@ renderer.setAnimationLoop(() => {
     camera.position.lerpVectors(tw.fp, tw.tp, k);
     if (k >= 1) tw = null;
   }
-  controls.target.x = THREE.MathUtils.clamp(controls.target.x, -30, 76);
-  controls.target.z = THREE.MathUtils.clamp(controls.target.z, -20, 20);
-  controls.target.y = THREE.MathUtils.clamp(controls.target.y, -1, 16);
+  controls.target.x = THREE.MathUtils.clamp(controls.target.x, -12, 82);
+  controls.target.z = THREE.MathUtils.clamp(controls.target.z, -16, 36);
+  controls.target.y = THREE.MathUtils.clamp(controls.target.y, -1, 20);
   controls.update();
   if (needPick) hover();
   viewOffset(W, Hh);
